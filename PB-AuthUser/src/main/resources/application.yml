@@ -1,0 +1,47 @@
+server: 
+  port: 8087
+
+spring:
+#  webflux:
+#    base-path: /easyAuth
+  application:
+    name: TCM-Auth-User
+  docker:
+    compose:
+      file: Docker/tcm-docker-compose-deps.yml
+      lifecycle-management: start_only
+      profiles:
+        active: dev
+      enabled: false
+
+  r2dbc:
+    url: r2dbc:mysql://localhost:3306/tcm_authuser
+    username: root
+    password: verySecret
+  flyway:
+    user: root
+    password: verySecret
+    url: jdbc:mysql://localhost:3306/tcm_authuser
+
+logging:
+  level:
+    web: debug
+    io:
+      r2dbc:
+        pool: debug
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health, info, metrics, env, conditions
+  endpoint:
+    health:
+      show-details: always
+
+eureka:
+  instance:
+    instance-id: ${spring.application.name}:${random.value}}
+  client:
+    service-url:
+      defaultZone: http://localhost:8761/eureka

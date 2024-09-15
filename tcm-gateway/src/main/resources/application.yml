@@ -1,0 +1,52 @@
+spring:
+  application:
+    name: tcm-gateway
+
+  cloud:
+    gateway:
+      routes:
+        - id: management-system
+          uri: lb://TCM-MANAGEMENT-SYSTEM
+          predicates:
+            - Path=/mgs/**
+          filters:
+            - StripPrefix=1
+
+        - id: management-store
+          uri: lb://TCM-STORE-MANAGEMENT
+          predicates:
+            - Path=/management/**
+          filters:
+            - StripPrefix=1
+
+        - id: easyAuth
+          uri: lb://TCM-AUTH-USER
+          predicates:
+            - Path=/easyauth/**
+          filters:
+            - StripPrefix=1
+
+
+
+server:
+  port: 9999
+
+eureka:
+  instance:
+    instance-id: ${spring.application.name}:${random.value}}
+  client:
+    service-url:
+      defaultZone: http://localhost:8761/eureka
+
+logging:
+  level:
+    io.netty: WARN
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health, info, metrics, env, conditions, gateway, routes, loggers, httptrace
+  endpoint:
+    health:
+      show-details: always

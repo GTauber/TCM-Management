@@ -1,0 +1,22 @@
+services:
+  auction-service-mysql:
+    image: mysql:latest
+    environment:
+      MYSQL_DATABASE: as_easyleiloes
+      MYSQL_PASSWORD: secret
+      MYSQL_ROOT_PASSWORD: verysecret
+      MYSQL_USER: tg
+    ports:
+      - '3306:3306'
+    volumes:
+      - mysql_data:/var/lib/mysql
+    restart: always
+    networks:
+      - easyleiloesNetwork
+
+networks:
+  easyleiloesNetwork:
+    driver: bridge
+
+volumes:
+  mysql_data:

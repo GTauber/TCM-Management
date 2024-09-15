@@ -1,0 +1,46 @@
+spring:
+  application:
+    name: TCM-Management-System
+  docker:
+    compose:
+      file: Docker/tcm-docker-compose-deps.yml
+      lifecycle-management: start_only
+      profiles:
+        active: dev
+      enabled: false
+
+  datasource:
+    url: jdbc:mysql://localhost:3306/tcm_management_system
+    username: root
+    password: verySecret
+
+  jpa:
+    show-sql: true
+    database: mysql
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.MySQLDialect
+        format_sql: true
+    hibernate:
+      ddl-auto: none
+
+  flyway:
+    password: verySecret
+    user: root
+    url: jdbc:mysql://localhost:3306/tcm_management_system
+
+eureka:
+  instance:
+    instance-id: ${spring.application.name}:${random.value}}
+  client:
+    service-url:
+      defaultZone: http://localhost:8761/eureka
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health, info, metrics, env, conditions
+  endpoint:
+    health:
+      show-details: always

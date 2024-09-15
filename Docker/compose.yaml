@@ -1,0 +1,21 @@
+services:
+  tcm-mysql:
+    image: mysql:latest
+    environment:
+      MYSQL_DATABASE: tcm
+      MYSQL_PASSWORD: secret
+      MYSQL_ROOT_PASSWORD: verySecret
+      MYSQL_USER: tg
+    ports:
+      - '3306:3306'
+    volumes:
+      - ./tcm-mysql_data:/var/lib/mysql
+    restart: always
+    networks:
+      - tcm_network
+
+networks:
+  tcm_network:
+    driver: bridge
+
+
