@@ -4,6 +4,8 @@ spring:
 
   cloud:
     gateway:
+      default-filters:
+        - PreserveHostHeader=true
       routes:
         - id: management-system
           uri: lb://TCM-MANAGEMENT-SYSTEM
@@ -15,14 +17,14 @@ spring:
         - id: management-store
           uri: lb://TCM-STORE-MANAGEMENT
           predicates:
-            - Path=/management/**
+            - Path=/store/**
           filters:
             - StripPrefix=1
 
         - id: easyAuth
           uri: lb://TCM-AUTH-USER
           predicates:
-            - Path=/easyauth/**
+            - Path=/easyauth/**, /easyauth/v3/api-docs, /easyauth/swagger-ui.html, /easyauth/swagger-ui/**, /easyauth/webjars/**
           filters:
             - StripPrefix=1
 
@@ -33,7 +35,7 @@ server:
 
 eureka:
   instance:
-    instance-id: ${spring.application.name}:${random.value}}
+    instance-id: ${spring.application.name}:${random.value}
   client:
     service-url:
       defaultZone: http://localhost:8761/eureka
@@ -41,6 +43,8 @@ eureka:
 logging:
   level:
     io.netty: WARN
+    org.springframework.security: DEBUG
+    org.springframework.cloud.gateway: DEBUG
 
 management:
   endpoints:
@@ -50,3 +54,29 @@ management:
   endpoint:
     health:
       show-details: always
+
+springdoc:
+  api-docs:
+    enabled: true
+    path: /v3/api-docs
+    groups:
+      enabled: true
+  swagger-ui:
+    enabled: true
+    path: /swagger-ui.html
+    urls:
+      - url: /store/v3/api-docs
+        name: Management-Store Docs
+#      - url: /store/swagger-ui.html
+#        name: Management Store API
+
+      - url: /mgs/v3/api-docs
+        name: Management System Docs
+#      - url: /mgs/swagger-ui.html
+#        name: Management System API
+
+      - url: /easyauth/v3/api-docs
+        name: Easy Auth Docs
+#      - url: /easyauth/swagger-ui.html
+#        name: Easy Auth API
+

@@ -1,5 +1,6 @@
 package tcm.pb.pbmanagementsystem.controller;
 
+import org.springframework.web.bind.annotation.CrossOrigin;
 import tcm.pb.pbmanagementsystem.model.dto.BarberDto;
 import tcm.pb.pbmanagementsystem.service.BarberService;
 import lombok.RequiredArgsConstructor;
@@ -20,6 +21,7 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping("/v1/barber")
 @Slf4j
 @RequiredArgsConstructor
+@CrossOrigin(origins = "*", maxAge = 3600)
 public class BarberController {
 
     private final BarberService barberService;

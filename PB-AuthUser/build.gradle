@@ -50,8 +50,8 @@ dependencies {
 	runtimeOnly 'com.mysql:mysql-connector-j'
 	runtimeOnly 'io.asyncer:r2dbc-mysql'
 
-////    Documentation
-//	implementation 'org.springdoc:springdoc-openapi-webflux-ui:1.6.12'
+//    Documentation
+	implementation 'org.springdoc:springdoc-openapi-starter-webflux-ui:2.6.0'
 
 //    SpringCloud
 	implementation 'org.springframework.cloud:spring-cloud-starter-netflix-eureka-client'
