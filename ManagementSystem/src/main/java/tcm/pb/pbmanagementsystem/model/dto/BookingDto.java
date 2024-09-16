@@ -8,8 +8,11 @@ import java.io.Serializable;
 import java.time.LocalDateTime;
 import java.util.List;
 
-public record BookingDto(Long id, Long userId, Long barberId, @NotNull @FutureOrPresent LocalDateTime startDatetime,
-                         @NotNull Integer duration, @NotNull @Future LocalDateTime endDatetime,
+public record BookingDto(Long id, Long userId,
+                         Long barberId,
+                         @NotNull @FutureOrPresent LocalDateTime startDatetime,
+                         @NotNull Integer duration,
+                         @NotNull @Future LocalDateTime endDatetime,
                          @NotNull List<ServiceType> services) implements
     Serializable {
 

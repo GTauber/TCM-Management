@@ -10,7 +10,10 @@ import java.io.Serializable;
 @JsonInclude(NON_NULL)
 public record UserDto(@NotNull Long id, @NotNull String name, @NotNull String email, String password, @NotNull UserType userType) implements Serializable {
 
-    public UserDto(Long id, @NotNull String name, @NotNull String email, @NotNull UserType userType) {
+    public UserDto(Long id,
+                   @NotNull String name,
+                   @NotNull String email,
+                   @NotNull UserType userType) {
         this(id, name, email, null, userType);
     }
 
