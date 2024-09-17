@@ -90,6 +90,9 @@ services:
   tcm-notification-consumer:
     image: tcm-notification-consumer
     depends_on:
+      - tcm-management-store
+      - tcm-management-system
+      - tcm-auth
       - tcm-eureka-server-service
       - tcm-rabbitmq
 #    ports:
