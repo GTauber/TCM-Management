@@ -1,11 +1,12 @@
 package tcm.pb.pbmanagementsystem.service.impl;
 
+import tcm.pb.pbmanagementsystem.config.client.NotificationClient;
+import tcm.pb.pbmanagementsystem.model.Notification;
 import tcm.pb.pbmanagementsystem.model.dto.BookingDto;
 import tcm.pb.pbmanagementsystem.model.entity.Booking;
 import tcm.pb.pbmanagementsystem.repository.BookingRepository;
 import tcm.pb.pbmanagementsystem.service.BarberService;
 import tcm.pb.pbmanagementsystem.service.BookingService;
-import tcm.pb.pbmanagementsystem.service.UserService;
 import java.util.Objects;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -19,21 +20,25 @@ import org.springframework.stereotype.Service;
 public class BookingServiceImpl implements BookingService {
 
     private final BookingRepository bookingRepository;
-    private final UserService userService;
     private final BarberService barberService;
     private final ConversionService conversionService;
+    private final NotificationClient notificationClient;
 
     @Override
     public Booking createBooking(BookingDto bookingDto) {
         log.info("Creating booking: {}", bookingDto);
-        var user = userService.getUserById(bookingDto.userId());
+//        var user = userService.getUserById(bookingDto.userId());
         var barber = barberService.getBarberById(bookingDto.barberId());
         var booking = conversionService.convert(bookingDto, Booking.class);
-        if (Objects.isNull(barber) || Objects.isNull(user) || Objects.isNull(booking)) {
+        if (Objects.isNull(barber) || Objects.isNull(bookingDto.userId()) || Objects.isNull(booking)) {
             throw new IllegalArgumentException("Null itens");
         }
-        booking.setUser(Objects.requireNonNull(user));
+        booking.setUserId(Objects.requireNonNull(bookingDto.userId()));
         booking.setBarber(Objects.requireNonNull(barber));
+        notificationClient.sendNotification(Notification.builder()
+                .message(bookingDto.toString())
+                .type("Booking")
+            .build());
         return bookingRepository.save(booking);
     }
 
@@ -48,13 +53,12 @@ public class BookingServiceImpl implements BookingService {
         log.info("Updating booking: {}", bookingDto);
         var booking = bookingRepository.findById(bookingDto.id())
             .orElseThrow();
-        var user = userService.getUserById(bookingDto.userId());
         var barber = barberService.getBarberById(bookingDto.barberId());
-        if (Objects.isNull(barber) || Objects.isNull(user)) {
+        if (Objects.isNull(barber)) {
             throw new IllegalArgumentException("Invalid Barber or User");
         }
         BeanUtils.copyProperties(bookingDto, booking);
-        booking.setUser(user);
+        booking.setUserId(bookingDto.userId());
         booking.setBarber(barber);
         return bookingRepository.save(booking);
     }

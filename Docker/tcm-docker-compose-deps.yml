@@ -12,6 +12,18 @@ services:
     networks:
       - tcm_network
 
+  tcm-rabbitmq:
+    image: rabbitmq:3-management
+    container_name: rabbitmq
+    ports:
+      - "5672:5672"
+      - "15672:15672"
+    environment:
+      RABBITMQ_DEFAULT_USER: tcm
+      RABBITMQ_DEFAULT_PASS: secret
+    networks:
+      - tcm_network
+
 networks:
   tcm_network:
     driver: bridge

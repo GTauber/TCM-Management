@@ -10,6 +10,6 @@ public class BookingToBookingDtoConverter implements Converter<Booking, BookingD
 
     @Override
     public BookingDto convert(Booking booking) {
-        return new BookingDto(booking.getId(), booking.getUser().getId(), booking.getBarber().getId(), booking.getStartDatetime(), booking.getDuration(), booking.getEndDatetime(), booking.getServices());
+        return new BookingDto(booking.getId(), booking.getUserId(), booking.getBarber().getId(), booking.getStartDatetime(), booking.getDuration(), booking.getEndDatetime(), booking.getServices());
     }
 }

@@ -1,0 +1,25 @@
+spring:
+  application:
+    name: TCM-Notification
+  rabbitmq:
+    host: localhost
+    port: 5672
+    username: tcm
+    password: secret
+  docker:
+    compose:
+      file: Docker/tcm-docker-compose-deps.yml
+      lifecycle-management: start_only
+      profiles:
+        active: dev
+      enabled: false
+
+server:
+  port: 8083
+
+eureka:
+  instance:
+    instance-id: ${spring.application.name}:${random.value}
+  client:
+    service-url:
+      defaultZone: http://localhost:8761/eureka
