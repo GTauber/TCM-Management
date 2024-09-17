@@ -15,13 +15,14 @@ spring:
       enabled: false
 
   r2dbc:
-    url: r2dbc:mysql://localhost:3306/tcm_authuser
+    url: r2dbc:mysql://tcm-mysql:3306/tcm_authuser
     username: root
     password: verySecret
   flyway:
     user: root
     password: verySecret
-    url: jdbc:mysql://localhost:3306/tcm_authuser
+    url: jdbc:mysql://tcm-mysql:3306/tcm_authuser
+    enabled: false
 
 logging:
   level:
@@ -44,4 +45,4 @@ eureka:
     instance-id: ${spring.application.name}:${random.value}}
   client:
     service-url:
-      defaultZone: http://localhost:8761/eureka
+      defaultZone: http://tcm-eureka-server-service:8761/eureka

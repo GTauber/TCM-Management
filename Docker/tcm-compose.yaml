@@ -1,0 +1,118 @@
+services:
+  tcm-mysql:
+    image: mysql:latest
+    environment:
+      MYSQL_ROOT_PASSWORD: verySecret
+      MYSQL_ROOT_USER: root
+    ports:
+      - '3306:3306'
+    volumes:
+      - ./tcm-mysql_data:/var/lib/mysql
+    restart: always
+    healthcheck:
+      test: [ "CMD", "mysqladmin", "ping", "-h", "localhost" ]
+      interval: 30s
+      timeout: 10s
+      retries: 5
+    networks:
+      - tcm_network
+
+  tcm-rabbitmq:
+    image: rabbitmq:3-management
+    ports:
+      - "5672:5672"
+      - "15672:15672"
+    environment:
+      RABBITMQ_DEFAULT_USER: tcm
+      RABBITMQ_DEFAULT_PASS: secret
+    healthcheck:
+      test: [ "CMD", "rabbitmqctl", "status" ]
+      interval: 30s
+      timeout: 10s
+      retries: 5
+    networks:
+      - tcm_network
+
+  tcm-eureka-server-service:
+    image: tcm-eureka-server
+    depends_on:
+      - tcm-mysql
+    ports:
+      - "8761:8761"
+    networks:
+      - tcm_network
+
+  tcm-management-store:
+    image: tcm-store
+    depends_on:
+      - tcm-eureka-server-service
+#    ports:
+#      - "8081:8081"
+    networks:
+      - tcm_network
+    deploy:
+        replicas: 1
+
+  tcm-management-system:
+    image: tcm-system
+    depends_on:
+      - tcm-eureka-server-service
+#    ports:
+#      - "8080:8080"
+    networks:
+      - tcm_network
+    deploy:
+      replicas: 1
+
+  tcm-auth:
+    image: tcm-auth
+    depends_on:
+      - tcm-eureka-server-service
+#    ports:
+#      - "8087:8087"
+    networks:
+      - tcm_network
+    deploy:
+      replicas: 1
+
+  tcm-notification:
+    image: tcm-notification
+    depends_on:
+      - tcm-eureka-server-service
+      - tcm-rabbitmq
+#    ports:
+#      - "8083:8083"
+    networks:
+      - tcm_network
+    deploy:
+      replicas: 1
+
+  tcm-notification-consumer:
+    image: tcm-notification-consumer
+    depends_on:
+      - tcm-eureka-server-service
+      - tcm-rabbitmq
+#    ports:
+#      - "8085:8085"
+    networks:
+      - tcm_network
+    deploy:
+      replicas: 1
+
+  tcm-gateway:
+    image: tcm-gateway
+    ports:
+      - "9999:9999"
+    networks:
+      - tcm_network
+    depends_on:
+      - tcm-management-store
+      - tcm-management-system
+      - tcm-auth
+      - tcm-eureka-server-service
+
+networks:
+  tcm_network:
+    driver: bridge
+
+

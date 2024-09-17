@@ -3,7 +3,7 @@ spring:
     name: TCM-NotificationConsumer
 
   rabbitmq:
-    host: localhost
+    host: tcm-rabbitmq
     port: 5672
     username: tcm
     password: secret
